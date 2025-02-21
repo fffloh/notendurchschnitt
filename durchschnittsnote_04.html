@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notendurchschnitt berechnen</title>
+    <style>
+        /* Basis-Styles für mobile Ansicht */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f5f5f5;
+            padding: 10px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333; /* Dunkles Grau für den Titel */
+        }
+
+        /* Eingabefelder optimieren */
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd; /* Helles Grau für die Eingabefelder */
+            border-radius: 6px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Buttons für mobile Nutzung optimieren */
+        button {
+            padding: 12px;
+            border: none;
+            background: #6c757d; /* Grauton für den Button */
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background: #5a6268; /* Etwas dunklerer Grauton für Hover-Effekt */
+        }
+
+        .remove-btn {
+            background: #dc3545; /* Rot für das Entfernen */
+            color: white;
+            border-radius: 50%;
+            padding: 5px 10px;
+            font-size: 18px;
+            cursor: pointer;
+            width: auto;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        h2 {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333; /* Dunkles Grau für den Durchschnitt */
+        }
+
+        /* Optimierungen für größere Bildschirme */
+        @media (min-width: 600px) {
+            .container {
+                max-width: 450px;
+            }
+        }
+
+        @media (min-width: 900px) {
+            .container {
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Berechnung meines aktuellen Durchschnitts</h1>
+        <form id="grade-form">
+            <div id="inputs">
+                <div class="input-group">
+                    <input type="number" class="credits" placeholder="Credit Points" min="1" required>
+                    <input type="number" class="grade" placeholder="Note" step="0.1" min="1.0" max="5.0" required>
+                    <button type="button" class="remove-btn">✖</button>
+                </div>
+            </div>
+            <button type="button" id="add-btn">Weiteres Fach hinzufügen</button>
+            <button type="submit">Berechnen</button>
+        </form>
+        <h2>Aktueller Durchschnitt: <span id="result">-</span></h2>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("grade-form");
+            const inputsContainer = document.getElementById("inputs");
+            const resultDisplay = document.getElementById("result");
+            const addButton = document.getElementById("add-btn");
+
+            // Berechnung des Durchschnitts
+            function calculateAverage() {
+                let totalCredits = 0;
+                let weightedSum = 0;
+
+                document.querySelectorAll(".input-group").forEach(group => {
+                    const creditsInput = group.querySelector(".credits");
+                    const gradeInput = group.querySelector(".grade");
+
+                    const credits = parseFloat(creditsInput.value) || 0;
+                    const grade = parseFloat(gradeInput.value) || 0;
+
+                    if (credits > 0 && grade >= 1.0 && grade <= 5.0) {
+                        totalCredits += credits;
+                        weightedSum += credits * grade;
+                    }
+                });
+
+                const average = totalCredits > 0 ? (weightedSum / totalCredits).toFixed(2) : "-";
+                resultDisplay.textContent = average;
+            }
+
+            // Echtzeitberechnung bei jeder Änderung (mobil-optimiert)
+            inputsContainer.addEventListener("input", function (event) {
+                if (event.target.classList.contains("credits") || event.target.classList.contains("grade")) {
+                    calculateAverage();
+                }
+            });
+
+            // Eventlistener zum Hinzufügen neuer Eingabefelder
+            addButton.addEventListener("click", function () {
+                const newGroup = document.createElement("div");
+                newGroup.classList.add("input-group");
+                newGroup.innerHTML = `
+                    <input type="number" class="credits" placeholder="Credit Points" min="1" required>
+                    <input type="number" class="grade" placeholder="Note" step="0.1" min="1.0" max="5.0" required>
+                    <button type="button" class="remove-btn">✖</button>
+                `;
+                inputsContainer.appendChild(newGroup);
+            });
+
+            // Eventlistener zum Entfernen von Eingabefeldern
+            inputsContainer.addEventListener("click", function (event) {
+                if (event.target.classList.contains("remove-btn")) {
+                    event.target.parentElement.remove();
+                    calculateAverage();
+                }
+            });
+
+            // Standardberechnung nach dem Absenden verhindern
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                calculateAverage();
+            });
+        });
+    </script>
+</body>
+</html>
