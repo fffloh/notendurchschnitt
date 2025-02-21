@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notendurchschnitt berechnen</title>
     <style>
-        /* Basis-Styles für mobile Ansicht */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -35,10 +34,9 @@
         h1 {
             font-size: 18px;
             margin-bottom: 15px;
-            color: #333; /* Dunkles Grau für den Titel */
+            color: #333;
         }
 
-        /* Eingabefelder optimieren */
         .input-group {
             display: flex;
             align-items: center;
@@ -49,17 +47,16 @@
         input {
             flex: 1;
             padding: 12px;
-            border: 1px solid #ddd; /* Helles Grau für die Eingabefelder */
+            border: 1px solid #ddd;
             border-radius: 6px;
             font-size: 16px;
             color: #333;
         }
 
-        /* Buttons für mobile Nutzung optimieren */
         button {
             padding: 12px;
             border: none;
-            background: #6c757d; /* Grauton für den Button */
+            background: #6c757d;
             color: white;
             border-radius: 6px;
             cursor: pointer;
@@ -69,17 +66,23 @@
         }
 
         button:hover {
-            background: #5a6268; /* Etwas dunklerer Grauton für Hover-Effekt */
+            background: #5a6268;
         }
 
         .remove-btn {
-            background: #dc3545; /* Rot für das Entfernen */
+            background: #dc3545;
             color: white;
+            border: none;
             border-radius: 50%;
-            padding: 5px 10px;
-            font-size: 18px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 300; /* Dünnere Schrift */
             cursor: pointer;
-            width: auto;
+            line-height: 0;
         }
 
         .remove-btn:hover {
@@ -89,10 +92,9 @@
         h2 {
             margin-top: 20px;
             font-size: 18px;
-            color: #333; /* Dunkles Grau für den Durchschnitt */
+            color: #333;
         }
 
-        /* Optimierungen für größere Bildschirme */
         @media (min-width: 600px) {
             .container {
                 max-width: 450px;
@@ -130,7 +132,6 @@
             const resultDisplay = document.getElementById("result");
             const addButton = document.getElementById("add-btn");
 
-            // Berechnung des Durchschnitts
             function calculateAverage() {
                 let totalCredits = 0;
                 let weightedSum = 0;
@@ -152,14 +153,6 @@
                 resultDisplay.textContent = average;
             }
 
-            // Echtzeitberechnung bei jeder Änderung (mobil-optimiert)
-            inputsContainer.addEventListener("input", function (event) {
-                if (event.target.classList.contains("credits") || event.target.classList.contains("grade")) {
-                    calculateAverage();
-                }
-            });
-
-            // Eventlistener zum Hinzufügen neuer Eingabefelder
             addButton.addEventListener("click", function () {
                 const newGroup = document.createElement("div");
                 newGroup.classList.add("input-group");
@@ -171,15 +164,12 @@
                 inputsContainer.appendChild(newGroup);
             });
 
-            // Eventlistener zum Entfernen von Eingabefeldern
             inputsContainer.addEventListener("click", function (event) {
                 if (event.target.classList.contains("remove-btn")) {
                     event.target.parentElement.remove();
-                    calculateAverage();
                 }
             });
 
-            // Standardberechnung nach dem Absenden verhindern
             form.addEventListener("submit", function (event) {
                 event.preventDefault();
                 calculateAverage();
